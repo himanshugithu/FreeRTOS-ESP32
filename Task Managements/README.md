@@ -145,9 +145,10 @@ vTaskDelay(delay_in_ms / portTICK_PERIOD_MS);
 - Three independent tasks run in parallel
 - Messages printed every second from each task
 - Includes deep dive into `xTaskCreate()` function and parameters
-
+---
 
 📚 More info: [FreeRTOS xTaskCreate() official documentation](https://www.freertos.org/a00125.html)
+---
 
 ## 👤 Author
 Developed by **Himanshu Fanibhare**.
