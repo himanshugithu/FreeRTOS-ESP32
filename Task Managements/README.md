@@ -153,7 +153,7 @@ vTaskDelay(delay_in_ms / portTICK_PERIOD_MS);
 ---
 
 ## 👤 Author
-Developed by **Himanshu Fanibhare**.
+ **Himanshu Fanibhare**.
 ---
 
 📌 *Feel free to contribute or raise an issue if you encounter any problems!* 🚀
