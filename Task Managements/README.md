@@ -86,7 +86,7 @@ if (result == pdPASS) {
 xTaskCreate(
     taskFunction,   // Function the task will execute
     "Task Name",    // Human-readable name (for debugging)
-    1024,            // Stack size in words (100 x 4 = 400 bytes on ESP32)
+    1024,           // Stack size in words (1024 x 4 = 4096 bytes on ESP32)
     NULL,           // Parameters passed to task (none in this case)
     1,              // Priority (1 = low, can be raised if needed)
     NULL            // Task handle (not used here)
@@ -128,13 +128,15 @@ Each message is printed every 1000 milliseconds (1 second) by its corresponding 
 
 ## 🧼 Cleanup Note
 
-`vTaskDelay()` allows the current task to yield CPU time, giving other tasks a chance to execute.  
+- `vTaskDelay()` allows the current task to yield CPU time, giving other tasks a chance to execute.  
 It takes delay in ticks, so to delay in milliseconds, use:
 
 ```
 vTaskDelay(delay_in_ms / portTICK_PERIOD_MS);
 ```
-
+- Priority ranges from 0 (lowest) to configMAX_PRIORITIES-1. 
+- Default value for configMAX_PRIORITIES is usually 25 on ESP32.
+- Always check return values from xTaskCreate() to ensure the task was created successfully.
 ---
 
 ## 📌 Summary
@@ -143,3 +145,15 @@ vTaskDelay(delay_in_ms / portTICK_PERIOD_MS);
 - Three independent tasks run in parallel
 - Messages printed every second from each task
 - Includes deep dive into `xTaskCreate()` function and parameters
+
+
+📚 More info: [FreeRTOS xTaskCreate() official documentation](https://www.freertos.org/a00125.html)
+
+## 👤 Author
+Developed by **Himanshu Fanibhare**.
+---
+
+📌 *Feel free to contribute or raise an issue if you encounter any problems!* 🚀
+
+---
+
