@@ -1,120 +1,145 @@
+# 🧠 FreeRTOS Multi-Tasking: Red, Blue, and Yellow LED Controller
 
-# Create Task Example (FreeRTOS on ESP32)
-
-This example demonstrates how to create tasks in FreeRTOS using the `xTaskCreate()` API. Tasks are the basic units of execution in FreeRTOS, similar to threads.
-
----
-
-## 📁 File: `2_Creating_tasks.ino`
-
-### ✅ What This Code Does
-
-It creates two tasks named `Task1` and `Task2`, each running a loop that prints its identity every second. This example is great for understanding basic multitasking.
+This example demonstrates how to create multiple tasks in FreeRTOS on an ESP32 (or any compatible board) to simulate controlling different LEDs — Red, Blue, and Yellow — each handled by its own task.
 
 ---
 
-## 🧠 Key Concepts
+## 📋 Description
 
-- **Task**: A function that runs independently and concurrently with other tasks.
-- **xTaskCreate()**: Function to create a new task.
-- **vTaskDelay()**: Causes a task to sleep for a specified time.
+Using `xTaskCreate()`, we launch **three concurrent tasks**:
+- `redLedControllerTask`
+- `blueLedControllerTask`
+- `yellowLedControllerTask`
+
+Each task is responsible for printing a message to the serial monitor, mimicking separate LED control logic.
+
 
 ---
 
-## 🧾 Code Explanation (Line by Line)
+## 🧠 `xTaskCreate()` Function Signature
 
-```cpp
-void Task1code( void * parameter ) {
+```c
+BaseType_t xTaskCreate(
+    TaskFunction_t pxTaskCode,
+    const char *const pcName,
+    const uint32_t usStackDepth,
+    void *const pvParameters,
+    UBaseType_t uxPriority,
+    TaskHandle_t *const pxCreatedTask
+);
 ```
-- **Function Signature** for Task1. It must return `void` and accept a single `void *` parameter.
 
-```cpp
-  for(;;) {
-    Serial.println("Task1 is running");
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
-  }
+### 📌 Parameters Explained:
+
+| Parameter           | Description |
+|---------------------|-------------|
+| `pxTaskCode`        | Pointer to the function that implements the task logic. |
+| `pcName`            | A short name for the task (used for debugging and tracing). |
+| `usStackDepth`      | The stack size allocated to the task in **words**, not bytes. On ESP32 (32-bit), 1 word = 4 bytes. So `100` = 400 bytes. |
+| `pvParameters`      | Optional parameter to pass to the task. Use `NULL` if not needed. |
+| `uxPriority`        | Task priority. Higher number = higher priority. Use `1` for basic tasks. |
+| `pxCreatedTask`     | Optional pointer to store the task handle. Use `NULL` if not needed. |
+
+### 🔁 Return Value:
+- Returns `pdPASS` (`1`) if task creation is successful.
+- Returns `errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY` if stack or memory could not be allocated.
+
+---
+
+## 📘 What is `BaseType_t`?
+
+```c
+typedef int BaseType_t;
 ```
-- `for(;;)` is an infinite loop.
-- `Serial.println(...)`: Prints to the serial monitor.
-- `vTaskDelay(...)`: Delays the task for 1000 ms (1 second).
-- `portTICK_PERIOD_MS` converts milliseconds to ticks.
 
-```cpp
-void Task2code( void * parameter ) {
-  for(;;) {
-    Serial.println("Task2 is running");
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
-  }
+- `BaseType_t` is a **FreeRTOS-defined signed integer type** used for **function return values** and general logic.
+- It ensures **portability across platforms** by abstracting away platform-specific integer sizes.
+- On most platforms like the **ESP32**, it is simply defined as `int`.
+
+### ✅ Why use `BaseType_t` instead of `int`?
+
+Using `BaseType_t` makes your code portable and consistent with FreeRTOS API standards, especially when switching to other microcontrollers.
+
+### 🧪 Common Return Values Using `BaseType_t`
+
+| Value                          | Meaning                                      |
+|-------------------------------|----------------------------------------------|
+| `pdPASS` (usually `1`)        | Function succeeded                           |
+| `pdFAIL` or error codes       | Function failed (e.g., insufficient memory)  |
+
+### 🧠 Example
+
+```c
+BaseType_t result;
+result = xTaskCreate(...);
+
+if (result == pdPASS) {
+    Serial.println("Task created successfully!");
+} else {
+    Serial.println("Task creation failed.");
 }
 ```
-- Same structure as `Task1code`, but for the second task.
+
+## 🧠 `xTaskCreate()`  Explanation
+
+```c
+xTaskCreate(
+    taskFunction,   // Function the task will execute
+    "Task Name",    // Human-readable name (for debugging)
+    1024,            // Stack size in words (100 x 4 = 400 bytes on ESP32)
+    NULL,           // Parameters passed to task (none in this case)
+    1,              // Priority (1 = low, can be raised if needed)
+    NULL            // Task handle (not used here)
+);
+```
+
+This function creates a new task and adds it to the scheduler. FreeRTOS will handle when and how each task gets CPU time based on its priority.
 
 ---
 
-### 🛠️ `setup()` Function
+## 🖨️ Output (Expected)
 
-```cpp
-void setup() {
-  Serial.begin(115200);
 ```
-- Initializes the serial communication at 115200 baud rate.
-
-```cpp
-  xTaskCreate(
-    Task1code,         // Function to be called
-    "Task1",           // Name of the task (for debugging)
-    10000,             // Stack size (in words)
-    NULL,              // Parameter to pass
-    1,                 // Task priority
-    NULL               // Task handle (not used here)
-  );
-```
-- Creates the first task with medium priority.
-
-```cpp
-  xTaskCreate(
-    Task2code, "Task2", 10000, NULL, 1, NULL);
-```
-- Creates the second task with the same priority.
-
-```cpp
-}
-```
-- Closes `setup()` function.
-
-```cpp
-void loop() {
-  // Nothing here; everything is handled by tasks.
-}
-```
-- `loop()` is empty because FreeRTOS handles the execution now.
-
----
-
-## 📤 Expected Output
-
-On the Serial Monitor, you should see alternating prints:
-```
-Task1 is running
-Task2 is running
-Task1 is running
-Task2 is running
+This is RED
+This is BLUE
+This is YELLOW
+This is RED
+This is BLUE
+This is YELLOW
 ...
 ```
 
-Both tasks share the CPU time equally since they have the same priority.
+Each message is printed every 1000 milliseconds (1 second) by its corresponding task.
 
 ---
 
-## 📝 Notes
+## ✅ Requirements
 
-- Tasks with the same priority share CPU time using time-slicing.
-- Use `vTaskDelay` to yield the CPU, or else higher-priority tasks may starve lower ones.
-- Make sure you allocate enough stack size (e.g., 10000 words here).
+- ESP32 or compatible board
+- Arduino IDE or PlatformIO
+- FreeRTOS support (already included in ESP32 Arduino core)
 
 ---
 
-## 📚 References
+## 🧩 Enhancements You Can Try
 
-- [FreeRTOS Task Creation](https://www.freertos.org/a00125.html)
-- [ESP32 Arduino + FreeRTOS](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/system/freertos.html)
+- Actually control real LEDs using `digitalWrite(RED, HIGH)` instead of just `Serial.println()`.
+---
+
+## 🧼 Cleanup Note
+
+`vTaskDelay()` allows the current task to yield CPU time, giving other tasks a chance to execute.  
+It takes delay in ticks, so to delay in milliseconds, use:
+
+```
+vTaskDelay(delay_in_ms / portTICK_PERIOD_MS);
+```
+
+---
+
+## 📌 Summary
+
+- Demonstrates **multi-tasking** with FreeRTOS using `xTaskCreate()`
+- Three independent tasks run in parallel
+- Messages printed every second from each task
+- Includes deep dive into `xTaskCreate()` function and parameters

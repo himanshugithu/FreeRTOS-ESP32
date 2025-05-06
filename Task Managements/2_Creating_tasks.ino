@@ -1,14 +1,13 @@
-#include <Arduino_FreeRTOS.h>
 
-#define RED    6
-#define YELLOW 7
-#define BLUE   8
+#define RED 2
+#define YELLOW 4
+#define BLUE 15
 
 typedef int TaskProfiler;
 
-TaskProfiler  RedLEDProfiler;
-TaskProfiler  YellowLEDProfiler;
-TaskProfiler  BlueLEDProfiler;
+TaskProfiler RedLEDProfiler;
+TaskProfiler YellowLEDProfiler;
+TaskProfiler BlueLEDProfiler;
 
 void setup()
 {
@@ -18,51 +17,49 @@ void setup()
               100,
               NULL,
               1,
-              NULL
-              );
- xTaskCreate(blueLedControllerTask,
-             "Blue LED Task",
-             100,
-             NULL,
-             1,
-             NULL);
- xTaskCreate(yellowLedControllerTask,
-             "Yellow LED Task",
-             100,
-             NULL,
-             1,
-             NULL
-             );
+              NULL);
+  xTaskCreate(blueLedControllerTask,
+              "Blue LED Task",
+              100,
+              NULL,
+              1,
+              NULL);
+  xTaskCreate(yellowLedControllerTask,
+              "Yellow LED Task",
+              100,
+              NULL,
+              1,
+              NULL);
 }
 
 void redLedControllerTask(void *pvParameters)
 {
-  pinMode(RED,OUTPUT);
+  pinMode(RED, OUTPUT);
 
-  while(1)
+  while (1)
   {
-   // Serial.println("This is RED");
+    Serial.println("This is RED");
   }
 }
 
 void blueLedControllerTask(void *pvParameters)
 {
-    pinMode(BLUE,OUTPUT);
-    while(1)
-    {
-    //  Serial.print("This is BLUE");
-    }
+  pinMode(BLUE, OUTPUT);
+  while (1)
+  {
+    Serial.print("This is BLUE");
+  }
 }
 
 void yellowLedControllerTask(void *pvParameters)
 {
-   pinMode(YELLOW,OUTPUT);
-  while(1)
+  pinMode(YELLOW, OUTPUT);
+  while (1)
   {
-  //  Serial.println("This is YELLOW");
+    Serial.println("This is YELLOW");
   }
 }
 
 void loop()
-{}
-
+{
+}
