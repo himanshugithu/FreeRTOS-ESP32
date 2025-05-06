@@ -1,13 +1,8 @@
-
 #define RED 2
 #define YELLOW 4
 #define BLUE 15
+#define GREEN 5
 
-typedef int TaskProfiler;
-
-TaskProfiler RedLEDProfiler;
-TaskProfiler YellowLEDProfiler;
-TaskProfiler BlueLEDProfiler;
 
 void setup()
 {
@@ -30,6 +25,12 @@ void setup()
               NULL,
               1,
               NULL);
+    xTaskCreate(greenLedControllerTask,
+              "green LED Task",
+              1024,
+              NULL,
+              1,
+              NULL);            
 }
 
 void redLedControllerTask(void *pvParameters)
@@ -57,6 +58,15 @@ void yellowLedControllerTask(void *pvParameters)
   while (1)
   {
     Serial.println("This is YELLOW");
+  }
+}
+
+void greenLedControllerTask(void *pvParameters)
+{
+  pinMode(GREEN, OUTPUT);
+  while (1)
+  {
+    Serial.println("This is GREEN");
   }
 }
 
