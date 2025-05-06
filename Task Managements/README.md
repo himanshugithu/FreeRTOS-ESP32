@@ -148,6 +148,8 @@ vTaskDelay(delay_in_ms / portTICK_PERIOD_MS);
 ---
 
 📚 More info: [FreeRTOS xTaskCreate() official documentation](https://www.freertos.org/a00125.html)
+
+
 ---
 
 ## 👤 Author
