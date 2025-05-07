@@ -87,5 +87,5 @@ void loop() {}
 * Implement a task to dynamically change LED blink rates.
 
 ## 🧑‍💻 Author
-**Himanshu Fanibhare**  
+**Himanshu Fanibhare**  (fanibharehimanshu@gmail.com)
 ---
