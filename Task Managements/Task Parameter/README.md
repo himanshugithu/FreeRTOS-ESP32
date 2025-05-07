@@ -18,9 +18,9 @@ This example demonstrates using **FreeRTOS** to control multiple LEDs (Red, Blue
 ### LED Pin Definitions:
 
 ```cpp
-#define RED     6
-#define BLUE    7
-#define YELLOW  8
+#define RED     2
+#define BLUE    4
+#define YELLOW  5
 ```
 
 ### ✅ Pointer Setup for Task Parameters
@@ -46,7 +46,6 @@ void setup()
 ```
 - Creates three tasks using `xTaskCreate()`.
 - Each task shares the same function `ledControllerTask`, but receives a **different LED pin** via `pvParameters`.
-- Stack size is `100` words (on Arduino Uno, 1 word = 1 byte), which is small but may work for basic tasks.
 ---
 
 ## 🧠 Key Concept: Passing Integers as `void*`
@@ -108,7 +107,7 @@ void ledControllerTask(void *pvParameters) {
 ```
 
 - The XOR (`^ 1`) toggles the LED state.
-- **⚠️ Important**: There is **no delay**, so the task runs infinitely fast and toggles the LED too rapidly for the eye to detect. A `vTaskDelay()` is strongly recommended.
+- **⚠️ Important**: If there is **no delay**, so the task runs infinitely fast and toggles the LED too rapidly for the eye to detect. A `vTaskDelay()` is strongly recommended.
 
 ---
 
