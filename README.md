@@ -56,13 +56,15 @@ FreeRTOS follows specific naming conventions for variables to ensure consistency
 * **ux** - Unsigned integers (e.g., `uxPriority` for task priority).
 * **v** - Void function return types (e.g., `vTaskDelete()` for task deletion).
 * **b** - Boolean values (e.g., `bTaskRunning` for task state).
+* **c** - Characters.
+* **ul** - Unsigned long variables.
+
+* **us** - Unsigned short variables.
 
 FreeRTOS uses a specific naming convention to differentiate between various data types and scopes:
 
 - Global Variables: Typically prefixed with a lowercase letter indicating the type, like xTaskHandle, pxQueueHandle, or ulCounter.
-
 - Local Variables: Often start with a lowercase letter without a prefix, like count, index.
-
 - Constants: Use uppercase letters and underscores, like pdMS_TO_TICKS, configTICK_RATE_HZ.
 
 Example:
@@ -70,7 +72,12 @@ Example:
 ```cpp 
 TaskHandle_t xTaskHandle;
 QueueHandle_t xQueueHandle;
-const TickType_t xDelay = pdMS_TO_TICKS(1000);
+const TickType_t xDelay = pdMS_TO_TICK(1000);
+BaseType_t xStatus;
+UBaseType_t uxCount;
+TaskHandle_t pxTaskHandle;
+void *pvParameters;
+char *pcMessage;
 ```
 
 ## 4. FreeRTOS Function Names
@@ -88,6 +95,42 @@ vFunctionTypeAction()
 * **pv** - Functions returning a pointer to void (e.g., `pvPortMalloc()`).
 * **ux** - Functions returning unsigned values (e.g., `uxTaskPriorityGet()`).
 
+### Functions in FreeRTOS follow a clear and consistent naming pattern:
+
+- Task Functions: Start with v, x, or pv depending on the return type:
+    - `vTaskDelay()` - void return type
+    - `xTaskCreate()` - returns a status (success or failure)
+    - `pvPortMalloc()` - returns a pointer (void*)
+
+- Queue Functions:
+    - `xQueueCreate()` - Create a queue
+    - `xQueueSend()` - Send data to a queue
+    - `xQueueReceive()` - Receive data from a queue
+
+- Semaphore Functions:
+    - `xSemaphoreCreateMutex()` - Create a mutex
+    - `xSemaphoreTake()` - Acquire a semaphore
+    - `xSemaphoreGive()` - Release a semaphore
+
+
+```cpp
+TaskHandle_t xHandle;
+
+void vTaskFunction(void *pvParameters) {
+    while (1) {
+        // Task code
+    }
+}
+
+void setup() {
+    xTaskCreate(vTaskFunction, "Task1", 1024, NULL, 1, &xHandle);
+    vTaskStartScheduler();
+    vTaskStartScheduler();    // Starts the FreeRTOS scheduler
+    xTaskCreate();            // Creates a new task
+    uxTaskPriorityGet();      // Returns the priority of a task
+    pvPortMalloc();           // Allocates memory from the heap
+}
+```
 ## 5. FreeRTOS Macro Names
 
 Macros in FreeRTOS are used to simplify code, improve readability, and reduce errors. They typically use uppercase letters and underscores:
@@ -104,7 +147,8 @@ Macros in FreeRTOS are used to simplify code, improve readability, and reduce er
 
 ```c
 // Delay a task for 500ms
-vTaskDelay(pdMS_TO_TICKS(500));
+const TickType_t delayTime = pdMS_TO_TICKS(500);  // 500 ms delay
+vTaskDelay(delayTime);
 ```
 
 ### Why Use Macros?
@@ -112,3 +156,24 @@ vTaskDelay(pdMS_TO_TICKS(500));
 * Reduce code size and increase efficiency.
 * Provide a level of abstraction for hardware-specific operations.
 * Simplify complex operations.
+
+
+### 6. Task State Diagram
+
+#### Below is a task state diagram showing the lifecycle of a FreeRTOS task:
+
+- Ready: Task is ready to run but waiting for CPU time.
+- Running: Task is currently executing.
+- Blocked: Task is waiting for a delay to expire or a resource to become available.
+- Suspended: Task is inactive until explicitly resumed.
+- Deleted: Task is terminated and its memory is released.
+
+![Task States](./images/tskstate.gif)
+
+### 7. Common Pitfalls and Best Practices
+
+- Stack Overflow: Ensure each task has enough stack space.
+- Priority Inversion: Use mutexes with priority inheritance if needed.
+- Starvation: Balance task priorities to avoid lower-priority tasks being starved.
+- Efficient Memory Usage: Avoid frequent dynamic memory allocation.
+- Avoid Blocking Delays: Use vTaskDelay() wisely to prevent task starvation.
