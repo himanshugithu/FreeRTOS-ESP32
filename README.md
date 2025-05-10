@@ -168,7 +168,8 @@ vTaskDelay(delayTime);
 - Suspended: Task is inactive until explicitly resumed.
 - Deleted: Task is terminated and its memory is released.
 
-![Task States](.\Images\tskstate.gif)
+![Task States](./Images/tskstate.gif)
+
 
 ### 7. Common Pitfalls and Best Practices
 
