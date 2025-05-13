@@ -158,7 +158,7 @@ vTaskDelay(delayTime);
 * Simplify complex operations.
 
 
-### 6. Task State Diagram
+## 6. Task State Diagram
 
 #### Below is a task state diagram showing the lifecycle of a FreeRTOS task:
 
@@ -171,7 +171,7 @@ vTaskDelay(delayTime);
 ![Task States](./Images/tskstate.gif)
 
 
-### 7. Common Pitfalls and Best Practices
+## 7. Common Pitfalls and Best Practices
 
 - Stack Overflow: Ensure each task has enough stack space.
 - Priority Inversion: Use mutexes with priority inheritance if needed.
