@@ -1,4 +1,3 @@
-#include <Arduino_FreeRTOS.h>
 
 // Structure for task parameters
 typedef struct {
